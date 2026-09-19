@@ -7,7 +7,7 @@ import { sound } from '../../utils/soundSynthesizer'
 
 export const BottomDock: React.FC = () => {
   const { activeTab, setActiveTab } = useApp()
-  const { accent, isOled } = useTheme()
+  const { accent, isOled, theme } = useTheme()
 
   const tabs = [
     { id: 'home' as const, label: 'Home', icon: Home },
@@ -17,13 +17,17 @@ export const BottomDock: React.FC = () => {
     { id: 'settings' as const, label: 'Settings', icon: Settings },
   ]
 
+  const isClassic = theme === 'classic-ios' || theme === 'classic-vintage' || theme === 'classic-executive'
+
   return (
-    <div className="absolute bottom-4 left-0 right-0 px-6 flex justify-center z-40 pointer-events-none">
+    <div className="absolute bottom-4 left-0 right-0 px-5 flex justify-center z-40 pointer-events-none">
       <nav
-        className={`pointer-events-auto w-full max-w-[340px] px-2.5 py-1.5 rounded-full flex items-center justify-around backdrop-blur-2xl transition-all shadow-[0_12px_32px_rgba(0,0,0,0.6)] ${
-          isOled
-            ? 'bg-[#121216]/95 border border-[#2a2a30]'
-            : 'bg-slate-950/80 border border-white/15'
+        className={`pointer-events-auto w-full max-w-[340px] px-2.5 py-1.5 flex items-center justify-around backdrop-blur-2xl transition-all ${
+          isClassic
+            ? 'rounded-[30px] bg-white/[0.12] border border-white/25 shadow-[0_16px_36px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)]'
+            : isOled
+            ? 'rounded-full bg-[#121216]/95 border border-[#2a2a30] shadow-[0_12px_32px_rgba(0,0,0,0.6)]'
+            : 'rounded-full bg-slate-950/80 border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.6)]'
         }`}
       >
         {tabs.map(tab => {

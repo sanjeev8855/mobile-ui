@@ -14,9 +14,12 @@ export const SettingsView: React.FC = () => {
   const [dailyBudget, setDailyBudget] = useState(preferences.dailyBudget.toString())
 
   const themes: { id: ThemeMode; name: string; desc: string; previewBg: string; previewBorder: string }[] = [
-    { id: 'cyberpunk', name: 'Cyberpunk HUD', desc: 'Neon cyan & techno aesthetic', previewBg: 'bg-[#070b14]', previewBorder: 'border-cyan-400' },
+    { id: 'classic-ios', name: 'Classic iOS', desc: 'Iconic smartphone look, frosted glass & squircle apps', previewBg: 'bg-gradient-to-b from-[#1c2438] to-[#0a0e1a]', previewBorder: 'border-blue-400' },
+    { id: 'classic-vintage', name: 'Classic Vintage', desc: 'Skeuomorphic Steve Jobs depth, analog watch & glass dock', previewBg: 'bg-[#1e2025]', previewBorder: 'border-slate-400' },
+    { id: 'classic-executive', name: 'Classic Executive', desc: 'Swiss chronometer dial, gold accents & platinum luxury', previewBg: 'bg-[#15161a]', previewBorder: 'border-amber-400' },
+    { id: 'glassmorphism', name: 'Frosted Glass', desc: 'Translucent blur & specular highlights', previewBg: 'bg-[#0c1021]', previewBorder: 'border-indigo-400' },
     { id: 'oled', name: 'OLED Stealth', desc: 'Pure pitch black #000000 & battery saver', previewBg: 'bg-black', previewBorder: 'border-white/40' },
-    { id: 'glassmorphism', name: 'iOS Frosted Glass', desc: 'Translucent blur & specular highlights', previewBg: 'bg-[#0c1021]', previewBorder: 'border-indigo-400' },
+    { id: 'cyberpunk', name: 'Cyberpunk HUD', desc: 'Neon cyan & techno aesthetic', previewBg: 'bg-[#070b14]', previewBorder: 'border-cyan-400' },
     { id: 'sunset', name: 'Sunset Aurora', desc: 'Velvet purple & warm rose glow', previewBg: 'bg-[#180828]', previewBorder: 'border-rose-400' },
     { id: 'retro-terminal', name: 'Matrix Terminal', desc: 'CRT phosphor green & monospaced', previewBg: 'bg-[#040e07]', previewBorder: 'border-emerald-400' },
     { id: 'nordic', name: 'Nordic Glacier', desc: 'Arctic midnight & ice cyan', previewBg: 'bg-[#08121f]', previewBorder: 'border-sky-400' },

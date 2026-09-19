@@ -2,11 +2,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import type { ThemeMode, AccentColor } from '../types'
 
 export const ACCENT_PRESETS: AccentColor[] = [
+  { id: 'ios-blue', name: 'Classic Blue', value: '#007aff', glow: 'rgba(0, 122, 255, 0.4)', border: 'rgba(0, 122, 255, 0.5)', bg: 'rgba(0, 122, 255, 0.15)' },
+  { id: 'classic-gold', name: 'Royal Gold', value: '#d4af37', glow: 'rgba(212, 175, 55, 0.4)', border: 'rgba(212, 175, 55, 0.5)', bg: 'rgba(212, 175, 55, 0.15)' },
+  { id: 'ios-green', name: 'Classic Emerald', value: '#34c759', glow: 'rgba(52, 199, 89, 0.4)', border: 'rgba(52, 199, 89, 0.5)', bg: 'rgba(52, 199, 89, 0.15)' },
   { id: 'cyan', name: 'Cyber Cyan', value: '#00f0ff', glow: 'rgba(0, 240, 255, 0.4)', border: 'rgba(0, 240, 255, 0.5)', bg: 'rgba(0, 240, 255, 0.12)' },
   { id: 'violet', name: 'Electric Violet', value: '#a855f7', glow: 'rgba(168, 85, 247, 0.4)', border: 'rgba(168, 85, 247, 0.5)', bg: 'rgba(168, 85, 247, 0.12)' },
-  { id: 'emerald', name: 'Neon Emerald', value: '#10b981', glow: 'rgba(16, 185, 129, 0.4)', border: 'rgba(16, 185, 129, 0.5)', bg: 'rgba(16, 185, 129, 0.12)' },
   { id: 'rose', name: 'Hyper Rose', value: '#f43f5e', glow: 'rgba(244, 63, 94, 0.4)', border: 'rgba(244, 63, 94, 0.5)', bg: 'rgba(244, 63, 94, 0.12)' },
-  { id: 'amber', name: 'Solar Amber', value: '#f59e0b', glow: 'rgba(245, 158, 11, 0.4)', border: 'rgba(245, 158, 11, 0.5)', bg: 'rgba(245, 158, 11, 0.12)' },
   { id: 'monochrome', name: 'Pure White', value: '#ffffff', glow: 'rgba(255, 255, 255, 0.3)', border: 'rgba(255, 255, 255, 0.3)', bg: 'rgba(255, 255, 255, 0.1)' },
 ]
 
@@ -16,6 +17,7 @@ interface ThemeContextType {
   accent: AccentColor
   setAccentId: (id: string) => void
   isOled: boolean
+  isClassic: boolean
   cardClass: string
   bgClass: string
   textPrimary: string
@@ -26,11 +28,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    return (localStorage.getItem('mobile_ui_theme') as ThemeMode) || 'cyberpunk'
+    return (localStorage.getItem('mobile_ui_theme') as ThemeMode) || 'classic-ios'
   })
 
   const [accentId, setAccentIdState] = useState<string>(() => {
-    return localStorage.getItem('mobile_ui_accent') || 'cyan'
+    return localStorage.getItem('mobile_ui_accent') || 'ios-blue'
   })
 
   const accent = ACCENT_PRESETS.find(a => a.id === accentId) || ACCENT_PRESETS[0]
@@ -53,13 +55,32 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [accent])
 
   const isOled = theme === 'oled'
+  const isClassic = theme === 'classic-ios' || theme === 'classic-vintage' || theme === 'classic-executive'
 
   let bgClass = 'bg-[#070b14] text-slate-100'
   let cardClass = 'bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl shadow-lg'
   let textPrimary = 'text-white'
   let textMuted = 'text-slate-400'
 
-  if (theme === 'oled') {
+  if (theme === 'classic-ios') {
+    // Authentic premium iOS twilight wallpaper and frosted glass
+    bgClass = 'bg-gradient-to-b from-[#172033] via-[#0f1626] to-[#090d17] text-slate-100'
+    cardClass = 'bg-white/[0.08] border border-white/[0.14] backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)]'
+    textPrimary = 'text-white'
+    textMuted = 'text-slate-300'
+  } else if (theme === 'classic-vintage') {
+    // Steve Jobs iOS 6 era textured slate with subtle skeuomorphic depth
+    bgClass = 'bg-[#18191d] text-slate-100'
+    cardClass = 'bg-gradient-to-b from-[#282a30] to-[#1c1d22] border border-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.6)]'
+    textPrimary = 'text-slate-100'
+    textMuted = 'text-slate-400'
+  } else if (theme === 'classic-executive') {
+    // Luxury Swiss watch & executive platinum/gold
+    bgClass = 'bg-[#111215] text-amber-50'
+    cardClass = 'bg-[#18191e] border border-amber-500/20 shadow-xl'
+    textPrimary = 'text-white'
+    textMuted = 'text-neutral-400'
+  } else if (theme === 'oled') {
     bgClass = 'bg-black text-white'
     cardClass = 'bg-[#101012] border border-[#222226] shadow-none'
     textPrimary = 'text-white'
@@ -94,6 +115,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         accent,
         setAccentId,
         isOled,
+        isClassic,
         cardClass,
         bgClass,
         textPrimary,

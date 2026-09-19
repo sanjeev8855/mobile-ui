@@ -1,4 +1,4 @@
-export type ThemeMode = 'cyberpunk' | 'oled' | 'glassmorphism' | 'sunset' | 'retro-terminal' | 'nordic'
+export type ThemeMode = 'classic-ios' | 'classic-vintage' | 'classic-executive' | 'cyberpunk' | 'oled' | 'glassmorphism' | 'sunset' | 'retro-terminal' | 'nordic'
 
 export interface AccentColor {
   id: string
