@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { StatusBar } from './StatusBar'
 import { SamsungSmartPill } from './SamsungSmartPill'
 import { BottomDock } from '../navigation/BottomDock'
-import { SamsungNavBar } from '../navigation/SamsungNavBar'
 import { CommandPalette } from '../navigation/CommandPalette'
 import { useApp } from '../../context/AppContext'
 import { useTheme } from '../../context/ThemeContext'
@@ -71,18 +70,12 @@ export const MobileShell: React.FC<{ children: React.ReactNode }> = ({ children 
         </div>
 
         {/* Scrollable Mobile Surface Area */}
-        <main className="flex-1 w-full overflow-y-auto overflow-x-hidden relative scrollbar-none px-4 pt-1 pb-36 z-10">
+        <main className="flex-1 w-full overflow-y-auto overflow-x-hidden relative scrollbar-none px-4 pt-1 pb-6 z-10">
           {children}
         </main>
 
-        {/* Soft bottom edge fade so text gracefully scrolls behind dock */}
-        <div className="pointer-events-none absolute bottom-11 inset-x-0 h-16 bg-gradient-to-t from-[#070b14] via-[#070b14]/75 to-transparent z-30" />
-
-        {/* Bottom Floating Navigation Dock */}
+        {/* Unified Samsung One UI Bottom Navigation Bar */}
         <BottomDock />
-
-        {/* Samsung One UI 3-Button Navigation Bar (||| ▢ <) */}
-        <SamsungNavBar />
 
         {/* Universal Search / Command Palette Overlay */}
         <CommandPalette />

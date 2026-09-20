@@ -142,6 +142,72 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
+      {/* Navigation Style (One UI Gestures vs 3-Button Bar) */}
+      <div className={`p-4 rounded-3xl ${cardClass} flex flex-col gap-3`}>
+        <div className="flex items-center gap-2">
+          <Smartphone size={16} style={{ color: accent.value }} />
+          <h3 className="text-sm font-bold text-white m-0">Navigation Bar Style</h3>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              sound.playTap()
+              updatePreferences({ navigationStyle: 'gestures' })
+              showIslandNotification('Navigation Updated', 'One UI Swipe Gestures Enabled', 'Smartphone', accent.value)
+            }}
+            className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all cursor-pointer ${
+              (preferences.navigationStyle || 'gestures') === 'gestures'
+                ? 'bg-white/10 border-white ring-1 ring-cyan-400/50 shadow-md'
+                : 'bg-black/30 border-white/10 opacity-70 hover:opacity-100'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-white">One UI Gestures</span>
+              {(preferences.navigationStyle || 'gestures') === 'gestures' && (
+                <Check size={13} className="text-cyan-400 stroke-[3]" />
+              )}
+            </div>
+            <p className="text-[10px] text-slate-400 leading-tight m-0">
+              Clean modern Galaxy S24 Ultra gesture bar
+            </p>
+            <div className="w-full py-1.5 bg-black/40 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-1 rounded-full bg-white/50" />
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              sound.playTap()
+              updatePreferences({ navigationStyle: 'buttons' })
+              showIslandNotification('Navigation Updated', '3-Button Bar Enabled', 'Smartphone', accent.value)
+            }}
+            className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all cursor-pointer ${
+              preferences.navigationStyle === 'buttons'
+                ? 'bg-white/10 border-white ring-1 ring-cyan-400/50 shadow-md'
+                : 'bg-black/30 border-white/10 opacity-70 hover:opacity-100'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-white">3-Button Bar</span>
+              {preferences.navigationStyle === 'buttons' && (
+                <Check size={13} className="text-cyan-400 stroke-[3]" />
+              )}
+            </div>
+            <p className="text-[10px] text-slate-400 leading-tight m-0">
+              Integrated Recents, Home & Back buttons
+            </p>
+            <div className="w-full py-1.5 bg-black/40 rounded-xl flex items-center justify-around px-2 text-white/60">
+              <div className="flex gap-0.5"><div className="w-0.5 h-2 bg-current" /><div className="w-0.5 h-2 bg-current" /><div className="w-0.5 h-2 bg-current" /></div>
+              <div className="w-2 h-2 border border-current rounded-[2px]" />
+              <div className="text-[10px] font-mono leading-none">&lt;</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
       {/* 3. Audio & Haptic Feedback Tester */}
       <div className={`p-4 rounded-3xl ${cardClass} flex flex-col gap-3`}>
         <div className="flex items-center justify-between">

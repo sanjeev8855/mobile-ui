@@ -18,21 +18,27 @@ class SoundEngine {
     return this.ctx
   }
 
-  // Soft haptic click
+  // Soft haptic click (non-blocking microtask)
   playTap() {
     try {
-      const ctx = this.getContext()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(420, ctx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.04)
-      gain.gain.setValueAtTime(0.08, ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04)
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      osc.start()
-      osc.stop(ctx.currentTime + 0.04)
+      if (typeof window !== 'undefined') {
+        window.requestAnimationFrame(() => {
+          try {
+            const ctx = this.getContext()
+            const osc = ctx.createOscillator()
+            const gain = ctx.createGain()
+            osc.type = 'sine'
+            osc.frequency.setValueAtTime(420, ctx.currentTime)
+            osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.04)
+            gain.gain.setValueAtTime(0.08, ctx.currentTime)
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04)
+            osc.connect(gain)
+            gain.connect(ctx.destination)
+            osc.start()
+            osc.stop(ctx.currentTime + 0.04)
+          } catch {}
+        })
+      }
     } catch {
       // Audio context waiting for user interaction
     }

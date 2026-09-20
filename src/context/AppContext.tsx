@@ -118,6 +118,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   groqApiKey: getGroqApiKey(),
   nvidiaApiKey: getNvidiaApiKey(),
   aiEngine: 'nemotron',
+  navigationStyle: 'gestures',
 }
 
 interface IslandNotification {
@@ -223,6 +224,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
         if (!parsed.aiEngine) {
           parsed.aiEngine = 'nemotron'
+        }
+        if (!parsed.navigationStyle) {
+          parsed.navigationStyle = 'gestures'
         }
         return { ...DEFAULT_PREFERENCES, ...parsed }
       } catch (e) {

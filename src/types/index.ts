@@ -118,4 +118,5 @@ export interface UserPreferences {
   groqApiKey?: string
   nvidiaApiKey?: string
   aiEngine: 'nemotron' | 'groq'
+  navigationStyle?: 'gestures' | 'buttons'
 }
