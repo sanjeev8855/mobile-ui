@@ -4,6 +4,7 @@ import { Settings, Palette, Smartphone, Volume2, ShieldCheck, Download, Upload, 
 import { useApp } from '../../context/AppContext'
 import { useTheme, ACCENT_PRESETS } from '../../context/ThemeContext'
 import { sound } from '../../utils/soundSynthesizer'
+import { getGroqApiKey } from '../../services/groqService'
 import type { ThemeMode } from '../../types'
 
 export const SettingsView: React.FC = () => {
@@ -12,6 +13,7 @@ export const SettingsView: React.FC = () => {
   const [userName, setUserName] = useState(preferences.userName === 'Sanje' ? 'Jay' : preferences.userName)
   const [tagline, setTagline] = useState(preferences.tagline)
   const [dailyBudget, setDailyBudget] = useState(preferences.dailyBudget.toString())
+  const [groqKey, setGroqKey] = useState(preferences.groqApiKey || getGroqApiKey())
 
   const themes: { id: ThemeMode; name: string; desc: string; previewBg: string; previewBorder: string }[] = [
     { id: 'samsung-oneui', name: 'Samsung One UI 7', desc: 'Galaxy S24 Ultra twilight gradient & One UI squircles', previewBg: 'bg-gradient-to-b from-[#101c36] to-[#070b14]', previewBorder: 'border-blue-500' },
@@ -23,10 +25,13 @@ export const SettingsView: React.FC = () => {
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault()
     sound.playChime()
+    const finalKey = groqKey.trim() || getGroqApiKey()
+    localStorage.setItem('mobile_ui_groq_key', finalKey)
     updatePreferences({
       userName: userName.trim() || 'Jay',
       tagline: tagline.trim() || 'Personal Command Center',
       dailyBudget: parseFloat(dailyBudget) || 50,
+      groqApiKey: finalKey,
     })
     showIslandNotification('Profile Updated', 'Settings saved to local vault', 'CheckCircle', '#10b981')
   }
@@ -205,12 +210,27 @@ export const SettingsView: React.FC = () => {
             />
           </div>
 
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="text-xs text-slate-400">Groq API Key (Galaxy AI)</label>
+              <span className="text-[10px] text-cyan-400 font-mono font-semibold">Groq Powered</span>
+            </div>
+            <input
+              type="password"
+              value={groqKey}
+              onChange={e => setGroqKey(e.target.value)}
+              placeholder="gsk_..."
+              className="w-full mt-1 px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs text-white font-mono focus:outline-none focus:border-cyan-400"
+            />
+            <p className="text-[10px] text-slate-400 mt-0.5">Ultra-fast on-device AI copilot via Groq Cloud</p>
+          </div>
+
           <button
             type="submit"
             className="w-full py-2.5 rounded-2xl font-bold text-xs text-black shadow-md transition-all hover:scale-[1.01]"
             style={{ backgroundColor: accent.value }}
           >
-            Save Profile Changes
+            Save Profile & AI Settings
           </button>
         </form>
       </div>

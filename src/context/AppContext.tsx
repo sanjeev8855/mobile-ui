@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
 import { sound } from '../utils/soundSynthesizer'
+import { askGroqCopilot, getGroqApiKey } from '../services/groqService'
 import type {
   WidgetConfig,
   Habit,
@@ -112,6 +113,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   dailyBudget: 50.00,
   monthlyBudget: 1200.00,
   focusTimerMinutes: 25,
+  groqApiKey: getGroqApiKey(),
 }
 
 interface IslandNotification {
@@ -208,6 +210,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const parsed = JSON.parse(saved)
         if (parsed.userName === 'Sanje' || !parsed.userName) {
           parsed.userName = 'Jay'
+        }
+        if (!parsed.groqApiKey) {
+          parsed.groqApiKey = getGroqApiKey()
         }
         return { ...DEFAULT_PREFERENCES, ...parsed }
       } catch (e) {
@@ -432,7 +437,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }, 4000)
   }
 
-  const sendAIMessage = (text: string) => {
+  const sendAIMessage = async (text: string) => {
     if (!text.trim()) return
     sound.playTap()
     const userMsg: AIMessage = {
@@ -444,21 +449,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setAiMessages(prev => [...prev, userMsg])
     setIsAITyping(true)
 
-    setTimeout(() => {
-      let replyContent = "I've analyzed your daily schedule, habits, and notes."
-      const lower = text.toLowerCase()
-
-      if (lower.includes('summar') || lower.includes('day') || lower.includes('agenda')) {
-        replyContent = `📊 **Daily Summary for Jay**:\n- **Events**: Product Sync at 12:00 PM, Focus Block at 2:30 PM.\n- **Habits**: 3 of 5 completed (60% streak progress 🔥).\n- **Expenses**: Spent $48.70 / $50.00 daily budget (97% used).\n- **Recommendation**: Take a 15-min walk to hit your 10,000 step goal!`
-      } else if (lower.includes('priority') || lower.includes('priorities') || lower.includes('todo')) {
-        replyContent = `? **Top 3 High-Impact Priorities**:\n1. ?? Finish the Mobile UI system architecture.\n2. ??? Complete your 30-minute workout before 7 PM.\n3. ?? Wind down with 10m mindful breathing.`
-      } else if (lower.includes('idea') || lower.includes('brainstorm')) {
-        replyContent = `?? **Smart Feature Concepts**:\n- **AI Context Snapper**: Snap a photo or screenshot to instantly parse action items into your Scratchpad.\n- **Haptic Biofeedback**: Gentle pulsing cadence for 4-7-8 breathing exercises.\n- **Autonomous Daily Debrief**: Evening audio memo summarizing all habits, expenses, and notes logged.`
-      } else if (lower.includes('breath') || lower.includes('zen') || lower.includes('relax')) {
-        replyContent = `?? **1-Minute Centering Exercise**:\n- Inhale slowly for 4 seconds (smell the forest ??)\n- Hold gently for 4 seconds\n- Exhale deeply for 6 seconds (release all tension ??)\n*Tip: Start the Ambient Rain generator in the Focus tab for deeper immersion!*`
-      } else {
-        replyContent = `I understand you're asking about "${text}". All your data is encrypted and saved offline in your local vault. Would you like me to create a quick note or schedule a reminder for this?`
-      }
+    try {
+      const replyContent = await askGroqCopilot(
+        text,
+        aiMessages,
+        {
+          userName: preferences.userName || 'Jay',
+          weather: DEFAULT_WEATHER,
+          events: DEFAULT_EVENTS,
+          habits,
+          expenses,
+          notes,
+        },
+        preferences.groqApiKey
+      )
 
       const botMsg: AIMessage = {
         id: (Date.now() + 1).toString(),
@@ -468,9 +472,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
 
       setAiMessages(prev => [...prev, botMsg])
-      setIsAITyping(false)
       sound.playBip()
-    }, 900)
+    } catch (err) {
+      console.error('Groq AI error:', err)
+      const botMsg: AIMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: `I couldn't reach the AI network right now, Jay. Please check your connection or Groq API key in Settings!`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }
+      setAiMessages(prev => [...prev, botMsg])
+    } finally {
+      setIsAITyping(false)
+    }
   }
 
   const clearAIMessages = () => {

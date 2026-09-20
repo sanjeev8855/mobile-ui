@@ -115,4 +115,5 @@ export interface UserPreferences {
   dailyBudget: number
   monthlyBudget: number
   focusTimerMinutes: number
+  groqApiKey?: string
 }

@@ -51,8 +51,13 @@ export const AssistantView: React.FC = () => {
             <Sparkles size={18} />
           </div>
           <div>
-            <h2 className="text-base font-bold text-white m-0">Gemini Copilot</h2>
-            <p className="text-[10px] text-slate-400">Personal Intelligence Assistant</p>
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-base font-bold text-white m-0">Galaxy AI Copilot</h2>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-mono">
+                Groq Active
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400">Ultra-fast on-device intelligence</p>
           </div>
         </div>
 

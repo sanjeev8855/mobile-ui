@@ -43,8 +43,13 @@ export const AICapsuleWidget: React.FC = () => {
             <Sparkles size={18} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white m-0">Gemini AI Copilot</h3>
-            <p className="text-[11px] text-slate-400">On-device context assistant</p>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-white m-0">Galaxy AI Copilot</h3>
+              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-mono">
+                Groq
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400">Context intelligence engine</p>
           </div>
         </div>
 
