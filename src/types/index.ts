@@ -1,4 +1,4 @@
-export type ThemeMode = 'classic-ios' | 'classic-vintage' | 'classic-executive' | 'cyberpunk' | 'oled' | 'glassmorphism' | 'sunset' | 'retro-terminal' | 'nordic'
+export type ThemeMode = 'samsung-oneui' | 'samsung-phantom-black' | 'samsung-titanium-violet' | 'samsung-titanium-gray' | 'cyberpunk' | 'oled' | 'sunset'
 
 export interface AccentColor {
   id: string
@@ -110,7 +110,7 @@ export interface UserPreferences {
   ambientSound: string | null
   ambientVolume: number
   screenMode: 'mobile-frame' | 'fullscreen'
-  deviceFrame: 'iphone16' | 'galaxys24' | 'minimal'
+  deviceFrame: 'galaxys24' | 'fullscreen'
   activeTab: 'home' | 'widgets' | 'assistant' | 'apps' | 'settings'
   dailyBudget: number
   monthlyBudget: number

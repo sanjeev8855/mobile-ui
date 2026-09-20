@@ -27,7 +27,7 @@ export const StatusBar: React.FC = () => {
   return (
     <div
       className={`w-full px-6 pt-3 pb-2 flex items-center justify-between text-xs select-none tracking-tight font-medium z-30 transition-colors ${
-        isOled ? 'text-white' : theme === 'retro-terminal' ? 'text-emerald-400' : 'text-slate-200'
+        isOled ? 'text-white' : 'text-slate-100'
       }`}
     >
       {/* Time & 5G Telemetry */}
