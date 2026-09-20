@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
 import { sound } from '../utils/soundSynthesizer'
-import { askGroqCopilot, getGroqApiKey } from '../services/groqService'
+import { processAICopilotMessage } from '../services/aiService'
+import { getNvidiaApiKey } from '../services/nvidiaService'
+import { getGroqApiKey } from '../services/groqService'
 import type {
   WidgetConfig,
   Habit,
@@ -114,6 +116,8 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   monthlyBudget: 1200.00,
   focusTimerMinutes: 25,
   groqApiKey: getGroqApiKey(),
+  nvidiaApiKey: getNvidiaApiKey(),
+  aiEngine: 'nemotron',
 }
 
 interface IslandNotification {
@@ -213,6 +217,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
         if (!parsed.groqApiKey) {
           parsed.groqApiKey = getGroqApiKey()
+        }
+        if (!parsed.nvidiaApiKey) {
+          parsed.nvidiaApiKey = getNvidiaApiKey()
+        }
+        if (!parsed.aiEngine) {
+          parsed.aiEngine = 'nemotron'
         }
         return { ...DEFAULT_PREFERENCES, ...parsed }
       } catch (e) {
@@ -450,7 +460,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsAITyping(true)
 
     try {
-      const replyContent = await askGroqCopilot(
+      const result = await processAICopilotMessage(
         text,
         aiMessages,
         {
@@ -460,25 +470,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           habits,
           expenses,
           notes,
-        },
-        preferences.groqApiKey
+          preferredEngine: preferences.aiEngine,
+          nvidiaApiKey: preferences.nvidiaApiKey,
+          groqApiKey: preferences.groqApiKey,
+        }
       )
 
       const botMsg: AIMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: replyContent,
+        content: result.text,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }
 
       setAiMessages(prev => [...prev, botMsg])
       sound.playBip()
     } catch (err) {
-      console.error('Groq AI error:', err)
+      console.error('AI Copilot error:', err)
       const botMsg: AIMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: `I couldn't reach the AI network right now, Jay. Please check your connection or Groq API key in Settings!`,
+        content: `I couldn't reach the AI cloud right now, Jay. Please check your connection or API keys in Settings!`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }
       setAiMessages(prev => [...prev, botMsg])

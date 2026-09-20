@@ -1,16 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Send, Mic, Trash2, Bot, User, CheckCircle } from 'lucide-react'
+import { Sparkles, Send, Mic, Trash2, Bot, User, CheckCircle, Download, Image as ImageIcon } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTheme } from '../../context/ThemeContext'
 import { sound } from '../../utils/soundSynthesizer'
 
 export const AssistantView: React.FC = () => {
-  const { aiMessages, sendAIMessage, clearAIMessages, isAITyping } = useApp()
+  const { aiMessages, sendAIMessage, clearAIMessages, isAITyping, preferences, updatePreferences, showIslandNotification } = useApp()
   const { cardClass, accent } = useTheme()
   const [input, setInput] = useState('')
   const [isListening, setIsListening] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const currentEngine = preferences.aiEngine || 'nemotron'
+
+  const toggleEngine = () => {
+    sound.playTap()
+    const next = currentEngine === 'nemotron' ? 'groq' : 'nemotron'
+    updatePreferences({ aiEngine: next })
+    showIslandNotification(
+      next === 'nemotron' ? 'NVIDIA Nemotron 3 Ultra' : 'Groq Cloud Engine',
+      'AI Engine Switched',
+      'Sparkles',
+      next === 'nemotron' ? '#76b900' : '#00f0ff'
+    )
+  }
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -33,11 +47,53 @@ export const AssistantView: React.FC = () => {
   }
 
   const quickPrompts = [
-    '? Summarize my daily agenda',
-    '?? Plan my top 3 priorities',
-    '?? 3 Creative project concepts',
-    '?? 1-Minute breathing exercise',
+    '🎨 /image cyberpunk galaxy s24 ultra in neon rain',
+    '📊 Summarize my day',
+    '⚡ Plan my top 3 priorities',
+    '💡 3 Creative project concepts',
+    '🧘 1-Minute breathing exercise',
   ]
+
+  const renderMessageContent = (content: string) => {
+    const imgMatch = content.match(/!\[(.*?)\]\((https?:\/\/.*?)\)/)
+    if (!imgMatch) {
+      return <div className="whitespace-pre-line">{content}</div>
+    }
+
+    const [fullMatch, altText, imgUrl] = imgMatch
+    const parts = content.split(fullMatch)
+    const textBefore = parts[0]
+    const textAfter = parts[1]
+
+    return (
+      <div className="flex flex-col gap-2">
+        {textBefore && <div className="whitespace-pre-line">{textBefore}</div>}
+
+        <div className="relative rounded-2xl overflow-hidden border border-white/20 shadow-xl bg-black/60 my-1 group">
+          <img
+            src={imgUrl}
+            alt={altText}
+            className="w-full h-auto max-h-[260px] object-cover rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+            loading="lazy"
+          />
+          <div className="absolute bottom-2 right-2 flex items-center gap-1.5">
+            <a
+              href={imgUrl}
+              target="_blank"
+              rel="noreferrer"
+              download="galaxy-ai-image.jpg"
+              className="px-2.5 py-1 rounded-xl bg-black/75 backdrop-blur-md text-white text-[10px] font-semibold border border-white/20 hover:bg-black flex items-center gap-1 shadow-md"
+            >
+              <Download size={11} />
+              <span>Save</span>
+            </a>
+          </div>
+        </div>
+
+        {textAfter && <div className="whitespace-pre-line text-slate-400 text-[10px]">{textAfter}</div>}
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col h-full min-h-[580px] justify-between pb-6">
@@ -53,11 +109,22 @@ export const AssistantView: React.FC = () => {
           <div>
             <div className="flex items-center gap-1.5">
               <h2 className="text-base font-bold text-white m-0">Galaxy AI Copilot</h2>
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-mono">
-                Groq Active
-              </span>
+              <button
+                onClick={toggleEngine}
+                className={`text-[9px] font-bold px-2 py-0.5 rounded-full border transition-all cursor-pointer flex items-center gap-1 ${
+                  currentEngine === 'nemotron'
+                    ? 'bg-[#76b900]/20 text-[#76b900] border-[#76b900]/40'
+                    : 'bg-cyan-500/20 text-cyan-300 border-cyan-400/40'
+                }`}
+                title="Tap to toggle between NVIDIA Nemotron and Groq"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                <span>{currentEngine === 'nemotron' ? 'NVIDIA Nemotron' : 'Groq Cloud'}</span>
+              </button>
             </div>
-            <p className="text-[10px] text-slate-400">Ultra-fast on-device intelligence</p>
+            <p className="text-[10px] text-slate-400">
+              {currentEngine === 'nemotron' ? '550B Nemotron 3 Ultra • FLUX Image Gen' : 'Ultra-fast Llama & GPT-OSS'}
+            </p>
           </div>
         </div>
 
@@ -96,7 +163,7 @@ export const AssistantView: React.FC = () => {
                   : `${cardClass} rounded-tl-sm text-slate-100`
               }`}
             >
-              <div className="whitespace-pre-line">{msg.content}</div>
+              {renderMessageContent(msg.content)}
               <div
                 className={`text-[9px] mt-1 font-mono text-right ${
                   msg.role === 'user' ? 'text-black/60' : 'text-slate-500'

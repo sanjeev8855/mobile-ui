@@ -116,4 +116,6 @@ export interface UserPreferences {
   monthlyBudget: number
   focusTimerMinutes: number
   groqApiKey?: string
+  nvidiaApiKey?: string
+  aiEngine: 'nemotron' | 'groq'
 }

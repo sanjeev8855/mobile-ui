@@ -5,6 +5,7 @@ import { useApp } from '../../context/AppContext'
 import { useTheme, ACCENT_PRESETS } from '../../context/ThemeContext'
 import { sound } from '../../utils/soundSynthesizer'
 import { getGroqApiKey } from '../../services/groqService'
+import { getNvidiaApiKey } from '../../services/nvidiaService'
 import type { ThemeMode } from '../../types'
 
 export const SettingsView: React.FC = () => {
@@ -14,6 +15,8 @@ export const SettingsView: React.FC = () => {
   const [tagline, setTagline] = useState(preferences.tagline)
   const [dailyBudget, setDailyBudget] = useState(preferences.dailyBudget.toString())
   const [groqKey, setGroqKey] = useState(preferences.groqApiKey || getGroqApiKey())
+  const [nvidiaKey, setNvidiaKey] = useState(preferences.nvidiaApiKey || getNvidiaApiKey())
+  const [selectedEngine, setSelectedEngine] = useState<'nemotron' | 'groq'>(preferences.aiEngine || 'nemotron')
 
   const themes: { id: ThemeMode; name: string; desc: string; previewBg: string; previewBorder: string }[] = [
     { id: 'samsung-oneui', name: 'Samsung One UI 7', desc: 'Galaxy S24 Ultra twilight gradient & One UI squircles', previewBg: 'bg-gradient-to-b from-[#101c36] to-[#070b14]', previewBorder: 'border-blue-500' },
@@ -25,15 +28,19 @@ export const SettingsView: React.FC = () => {
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault()
     sound.playChime()
-    const finalKey = groqKey.trim() || getGroqApiKey()
-    localStorage.setItem('mobile_ui_groq_key', finalKey)
+    const finalGroqKey = groqKey.trim() || getGroqApiKey()
+    const finalNvidiaKey = nvidiaKey.trim() || getNvidiaApiKey()
+    localStorage.setItem('mobile_ui_groq_key', finalGroqKey)
+    localStorage.setItem('mobile_ui_nvidia_key', finalNvidiaKey)
     updatePreferences({
       userName: userName.trim() || 'Jay',
       tagline: tagline.trim() || 'Personal Command Center',
       dailyBudget: parseFloat(dailyBudget) || 50,
-      groqApiKey: finalKey,
+      groqApiKey: finalGroqKey,
+      nvidiaApiKey: finalNvidiaKey,
+      aiEngine: selectedEngine,
     })
-    showIslandNotification('Profile Updated', 'Settings saved to local vault', 'CheckCircle', '#10b981')
+    showIslandNotification('Profile Updated', 'AI Engines & Settings Saved', 'CheckCircle', '#10b981')
   }
 
   const handleExportData = () => {
@@ -208,6 +215,51 @@ export const SettingsView: React.FC = () => {
               onChange={e => setDailyBudget(e.target.value)}
               className="w-full mt-1 px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs text-white focus:outline-none focus:border-cyan-400"
             />
+          </div>
+
+          {/* Active Copilot AI Engine */}
+          <div>
+            <label className="text-xs text-slate-400">Primary AI Copilot Engine</label>
+            <div className="grid grid-cols-2 gap-2 mt-1.5">
+              <button
+                type="button"
+                onClick={() => setSelectedEngine('nemotron')}
+                className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  selectedEngine === 'nemotron'
+                    ? 'bg-[#76b900]/20 text-[#76b900] border-[#76b900]/50 shadow-md'
+                    : 'bg-black/30 text-slate-400 border-white/10 hover:text-white'
+                }`}
+              >
+                <span>⚡ Nemotron 550B</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedEngine('groq')}
+                className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  selectedEngine === 'groq'
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50 shadow-md'
+                    : 'bg-black/30 text-slate-400 border-white/10 hover:text-white'
+                }`}
+              >
+                <span>🚀 Groq Cloud</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="text-xs text-slate-400">NVIDIA API Key (Nemotron 3 Ultra)</label>
+              <span className="text-[10px] text-[#76b900] font-mono font-semibold">Nemotron Active</span>
+            </div>
+            <input
+              type="password"
+              value={nvidiaKey}
+              onChange={e => setNvidiaKey(e.target.value)}
+              placeholder="nvapi-..."
+              className="w-full mt-1 px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs text-white font-mono focus:outline-none focus:border-[#76b900]"
+            />
+            <p className="text-[10px] text-slate-400 mt-0.5">Flagship 550B Nemotron reasoning on NVIDIA NIM</p>
           </div>
 
           <div>
