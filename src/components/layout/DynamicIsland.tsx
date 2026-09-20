@@ -72,7 +72,7 @@ export const DynamicIsland: React.FC = () => {
                   ? formatTime(focusTimeLeft)
                   : currentAmbient
                   ? currentAmbient.toUpperCase()
-                  : 'Sanje Hub'}
+                  : 'Jay Hub'}
               </span>
             </div>
 

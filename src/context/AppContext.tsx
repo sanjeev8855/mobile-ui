@@ -96,7 +96,7 @@ const DEFAULT_STATS: SystemStats = {
 }
 
 const DEFAULT_PREFERENCES: UserPreferences = {
-  userName: 'Sanje',
+  userName: 'Jay',
   tagline: 'Design & Code Enthusiast',
   avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
   theme: 'samsung-oneui',
@@ -203,7 +203,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [preferences, setPreferences] = useState<UserPreferences>(() => {
     const saved = localStorage.getItem('mobile_ui_prefs')
-    return saved ? { ...DEFAULT_PREFERENCES, ...JSON.parse(saved) } : DEFAULT_PREFERENCES
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (parsed.userName === 'Sanje' || !parsed.userName) {
+          parsed.userName = 'Jay'
+        }
+        return { ...DEFAULT_PREFERENCES, ...parsed }
+      } catch (e) {
+        // fallback
+      }
+    }
+    return DEFAULT_PREFERENCES
   })
 
   const [activeTab, setActiveTab] = useState<'home' | 'widgets' | 'assistant' | 'apps' | 'settings'>('home')
@@ -224,7 +235,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     {
       id: 'welcome',
       role: 'assistant',
-      content: "Hello Sanje! I'm your on-device AI Copilot. How can I optimize your day today? You can ask me to summarize your daily agenda, generate new project concepts, or draft quick replies.",
+      content: "Hello Jay! I'm your on-device AI Copilot. How can I optimize your day today? You can ask me to summarize your daily agenda, generate new project concepts, or draft quick replies.",
       timestamp: '10:00 AM',
     },
   ])
@@ -438,7 +449,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const lower = text.toLowerCase()
 
       if (lower.includes('summar') || lower.includes('day') || lower.includes('agenda')) {
-        replyContent = `?? **Daily Summary for Sanje**:\n- **Events**: Product Sync at 12:00 PM, Focus Block at 2:30 PM.\n- **Habits**: 3 of 5 completed (60% streak progress ??).\n- **Expenses**: Spent $48.70 / $50.00 daily budget (97% used).\n- **Recommendation**: Take a 15-min walk to hit your 10,000 step goal!`
+        replyContent = `📊 **Daily Summary for Jay**:\n- **Events**: Product Sync at 12:00 PM, Focus Block at 2:30 PM.\n- **Habits**: 3 of 5 completed (60% streak progress 🔥).\n- **Expenses**: Spent $48.70 / $50.00 daily budget (97% used).\n- **Recommendation**: Take a 15-min walk to hit your 10,000 step goal!`
       } else if (lower.includes('priority') || lower.includes('priorities') || lower.includes('todo')) {
         replyContent = `? **Top 3 High-Impact Priorities**:\n1. ?? Finish the Mobile UI system architecture.\n2. ??? Complete your 30-minute workout before 7 PM.\n3. ?? Wind down with 10m mindful breathing.`
       } else if (lower.includes('idea') || lower.includes('brainstorm')) {

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Search, Moon, Sun, Sparkles, Maximize2, Minimize2, Smartphone } from 'lucide-react'
 import { StatusBar } from './StatusBar'
 import { SamsungSmartPill } from './SamsungSmartPill'
@@ -130,9 +130,12 @@ export const MobileShell: React.FC<{ children: React.ReactNode }> = ({ children 
         </div>
 
         {/* Scrollable Mobile Surface Area */}
-        <main className="flex-1 w-full overflow-y-auto overflow-x-hidden relative scrollbar-none px-4 pt-1 pb-20 z-10">
+        <main className="flex-1 w-full overflow-y-auto overflow-x-hidden relative scrollbar-none px-4 pt-1 pb-36 z-10">
           {children}
         </main>
+
+        {/* Soft bottom edge fade so text gracefully scrolls behind dock */}
+        <div className="pointer-events-none absolute bottom-11 inset-x-0 h-16 bg-gradient-to-t from-[#070b14] via-[#070b14]/75 to-transparent z-30" />
 
         {/* Bottom Floating Navigation Dock */}
         <BottomDock />

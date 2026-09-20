@@ -29,7 +29,7 @@ export const WeatherAgendaWidget: React.FC = () => {
             <span>{getGreeting()}</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white m-0">
-            {preferences.userName || 'Sanje'}
+            {preferences.userName || 'Jay'}
           </h1>
           <p className="text-xs opacity-60 text-slate-300">
             {preferences.tagline || 'Personal Command Center'}

@@ -9,7 +9,7 @@ import type { ThemeMode } from '../../types'
 export const SettingsView: React.FC = () => {
   const { preferences, updatePreferences, habits, notes, expenses, apps, showIslandNotification } = useApp()
   const { theme, setTheme, accent, setAccentId, cardClass } = useTheme()
-  const [userName, setUserName] = useState(preferences.userName)
+  const [userName, setUserName] = useState(preferences.userName === 'Sanje' ? 'Jay' : preferences.userName)
   const [tagline, setTagline] = useState(preferences.tagline)
   const [dailyBudget, setDailyBudget] = useState(preferences.dailyBudget.toString())
 
@@ -18,16 +18,13 @@ export const SettingsView: React.FC = () => {
     { id: 'samsung-phantom-black', name: 'Phantom Black (AMOLED)', desc: 'Pure #000000 black for Dynamic AMOLED 2X battery saving', previewBg: 'bg-black', previewBorder: 'border-white/40' },
     { id: 'samsung-titanium-violet', name: 'Titanium Violet', desc: 'S24 Ultra Titanium Violet chassis & gold framing', previewBg: 'bg-gradient-to-b from-[#1e152e] to-[#0a0710]', previewBorder: 'border-purple-400' },
     { id: 'samsung-titanium-gray', name: 'Titanium Gray', desc: 'S24 Ultra Natural satin titanium finish', previewBg: 'bg-[#1e2025]', previewBorder: 'border-slate-400' },
-    { id: 'oled', name: 'OLED Stealth', desc: 'Minimalist high contrast monochrome', previewBg: 'bg-black', previewBorder: 'border-neutral-500' },
-    { id: 'cyberpunk', name: 'Cyberpunk Galaxy', desc: 'Neon cyan & techno aesthetic', previewBg: 'bg-[#070b14]', previewBorder: 'border-cyan-400' },
-    { id: 'sunset', name: 'Sunset Aurora', desc: 'Velvet purple & warm rose glow', previewBg: 'bg-[#180828]', previewBorder: 'border-rose-400' },
   ]
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault()
     sound.playChime()
     updatePreferences({
-      userName: userName.trim() || 'Sanje',
+      userName: userName.trim() || 'Jay',
       tagline: tagline.trim() || 'Personal Command Center',
       dailyBudget: parseFloat(dailyBudget) || 50,
     })

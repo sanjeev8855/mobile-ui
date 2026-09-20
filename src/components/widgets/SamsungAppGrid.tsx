@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import { Phone, MessageSquare, Globe, Camera, Image, Calendar, Clock, CloudSun, FileText, Folder, Settings, Sparkles, Activity, CreditCard, Music, MapPin } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
@@ -195,7 +195,7 @@ export const SamsungAppGrid: React.FC = () => {
   return (
     <div className="w-full pt-1 pb-3">
       {/* 4x4 Samsung One UI App Grid */}
-      <div className="grid grid-cols-4 gap-y-4 gap-x-2.5 justify-items-center select-none">
+      <div className="grid grid-cols-4 gap-y-3 gap-x-2 justify-items-center select-none">
         {samsungApps.map(app => {
           const Icon = app.icon
 
@@ -204,30 +204,30 @@ export const SamsungAppGrid: React.FC = () => {
               key={app.id}
               whileTap={{ scale: 0.88 }}
               onClick={app.action}
-              className="flex flex-col items-center gap-1.5 focus:outline-none cursor-pointer group"
+              className="flex flex-col items-center gap-1 focus:outline-none cursor-pointer group"
             >
               {/* Samsung Squircle Icon with One UI Curves */}
               <div className="relative">
                 <div
-                  className={`w-[58px] h-[58px] rounded-[22px] bg-gradient-to-b ${app.gradient} flex flex-col items-center justify-center relative overflow-hidden shadow-[0_6px_16px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.3)] transition-transform duration-150 group-hover:scale-105`}
+                  className={`w-[52px] h-[52px] rounded-[18px] bg-gradient-to-b ${app.gradient} flex flex-col items-center justify-center relative overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.3)] transition-transform duration-150 group-hover:scale-105`}
                 >
                   {/* Subtle One UI Lighting Sheen */}
-                  <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent pointer-events-none rounded-t-[22px]" />
+                  <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent pointer-events-none rounded-t-[18px]" />
 
                   {/* Special Live Calendar Icon */}
                   {app.isLiveCalendar ? (
                     <div className="flex flex-col items-center justify-center w-full h-full text-slate-900 bg-white">
-                      <div className="w-full bg-[#e12e36] text-white text-[9px] font-black uppercase text-center py-0.5 tracking-wider">
+                      <div className="w-full bg-[#e12e36] text-white text-[8px] font-black uppercase text-center py-0.5 tracking-wider">
                         {todayDay}
                       </div>
-                      <span className="text-xl font-black font-sans text-slate-900 leading-none pt-1">
+                      <span className="text-lg font-black font-sans text-slate-900 leading-none pt-0.5">
                         {todayDate}
                       </span>
                     </div>
                   ) : (
                     Icon && (
                       <Icon
-                        size={28}
+                        size={25}
                         className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
                       />
                     )
@@ -239,7 +239,7 @@ export const SamsungAppGrid: React.FC = () => {
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-[#ff3b30] border-2 border-[#121c33] rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-md z-20 font-mono"
+                    className="absolute -top-1 -right-1 min-w-[18px] h-4.5 px-1 bg-[#ff3b30] border-2 border-[#121c33] rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-md z-20 font-mono"
                   >
                     {app.badge}
                   </motion.div>
@@ -247,7 +247,7 @@ export const SamsungAppGrid: React.FC = () => {
               </div>
 
               {/* Samsung One UI App Label */}
-              <span className="text-[11px] font-medium text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] tracking-tight text-center truncate max-w-[66px]">
+              <span className="text-[10px] font-medium text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] tracking-tight text-center truncate max-w-[62px]">
                 {app.name}
               </span>
             </motion.button>

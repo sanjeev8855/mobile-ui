@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { CloudSun, Sun, MapPin, Sparkles, Bell, ArrowRight } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
@@ -27,6 +27,14 @@ export const SamsungWeatherClockWidget: React.FC = () => {
   const hours = time.getHours().toString().padStart(2, '0')
   const minutes = time.getMinutes().toString().padStart(2, '0')
 
+  const getGreeting = () => {
+    const hour = time.getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 17) return 'Good afternoon'
+    if (hour < 21) return 'Good evening'
+    return 'Late night'
+  }
+
   return (
     <div className={`p-4 rounded-[26px] ${cardClass} relative overflow-hidden transition-all shadow-xl select-none`}>
       {/* Subtle Samsung Galaxy glow */}
@@ -34,6 +42,22 @@ export const SamsungWeatherClockWidget: React.FC = () => {
         className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-20 pointer-events-none"
         style={{ backgroundColor: accent.value }}
       />
+
+      {/* Top Banner: One UI Greeting & Profile */}
+      <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-white/10">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full overflow-hidden border border-white/20 shadow-sm shrink-0">
+            <img src={preferences.avatarUrl} alt="Jay" className="w-full h-full object-cover" />
+          </div>
+          <span className="text-xs font-semibold text-white tracking-tight">
+            {getGreeting()}, <span style={{ color: accent.value }}>{preferences.userName || 'Jay'}</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-[10px] font-medium text-cyan-300">
+          <Sparkles size={10} />
+          <span>Galaxy AI</span>
+        </div>
+      </div>
 
       {/* Main Dual Clock & Weather Block */}
       <div className="flex items-center justify-between">
